@@ -39,6 +39,7 @@ test('onboarding, reviewed transfer, privacy rights and revoked logout',async({p
  expect((await(await page.request.get('/api/privacy/requests')).json()).length).toBe(1);
  await page.screenshot({path:info.outputPath('privacy.png'),fullPage:true});
  await page.getByRole('button',{name:'Log Out',exact:true}).click();
+ await expect(page.getByRole('heading',{name:'Buka akun demo',exact:true})).toBeVisible();
  expect((await page.request.get('/api/session')).status()).toBe(401);
  await expect(page.getByLabel(/Kata Sandi/)).toHaveValue('');
  await page.reload();await expect(page.getByRole('heading',{name:'Buka akun demo',exact:true})).toBeVisible();
