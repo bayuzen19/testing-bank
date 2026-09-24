@@ -1,7 +1,7 @@
 name: Bank PoC quality and documentation
 on:
   push:
-    branches: [main, bank-agent-e2e]
+    branches: [main, bank-agent-e2e, hermes-process-demo]
   workflow_dispatch:
 permissions:
   contents: read

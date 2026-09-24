@@ -522,17 +522,31 @@ function BankSummary({
   send,
   transferKey,
 }) {
+  const [isBalanceHidden, setIsBalanceHidden] = useState(false);
+
   return (
     <div className="bank-grid">
       <div>
         <section className="passbook">
           <div className="passbook-top">
             <span>Saldo Tersedia</span>
-            <span>IDR / SINTETIS</span>
+            <button
+              type="button"
+              className="text-button balance-toggle"
+              aria-pressed={isBalanceHidden}
+              onClick={() => setIsBalanceHidden((hidden) => !hidden)}
+            >
+              {isBalanceHidden ? "Tampilkan saldo" : "Sembunyikan saldo"}
+            </button>
+          </div>
+          <div className="passbook-header">
+             <span className="pill light">IDR / SINTETIS</span>
           </div>
           {accounts.map((a) => (
             <div key={a.id}>
-              <div className="balance">{money(a.balance)}</div>
+              <div className={isBalanceHidden ? "balance balance-hidden" : "balance"}>
+                {isBalanceHidden ? "Saldo disembunyikan" : money(a.balance)}
+              </div>
               <div className="account-line">
                 <span>{a.label}</span>
                 <span>{a.maskedNumber}</span>
@@ -700,6 +714,7 @@ function BankSummary({
     </div>
   );
 }
+
 function PrivacyView({
   session,
   busy,

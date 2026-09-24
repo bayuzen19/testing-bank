@@ -849,3 +849,9 @@ td small {
     font-size: 12px;
   }
 }
+
+/* Reviewer polish for the Hermes-generated balance control. */
+.passbook-top { align-items: center; gap: 12px; flex-wrap: wrap; }
+.passbook .balance-toggle { color: var(--plum); font-size: 12px; min-height: 30px; }
+.balance-hidden { font-size: 27px; line-height: 1.4; letter-spacing: 0; }
+.balance-toggle:focus-visible { outline: 2px solid var(--forest); outline-offset: 4px; }
