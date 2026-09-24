@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.*
+!.env.example
+runtime/
+reports/
+coverage/
+dist/
+playwright-report/
+test-results/
+__pycache__/
+*.log
+
