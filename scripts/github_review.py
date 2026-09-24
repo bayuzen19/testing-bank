@@ -47,7 +47,7 @@ def main():
             if a.file and name not in a.file:
                 omitted.append(name)
                 continue
-            if (Path(name).suffix not in {'.ts', '.tsx', '.jsx', '.js', '.py', '.yml', '.yaml', '.mjs'}
+            if (Path(name).suffix not in {'.ts', '.tsx', '.jsx', '.js', '.py', '.yml', '.yaml', '.mjs', '.sql'}
                     or '.env' in Path(name).name or not patch):
                 omitted.append(name)
                 continue

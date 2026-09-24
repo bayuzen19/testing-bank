@@ -13,6 +13,7 @@ Website ini adalah workload evaluasi, bukan bukti agent siap bekerja otonom.
 | Qwen3-Coder 30B, 64k | 12m28s, 36 tool calls, browser 0/4 meski model mengklaim sesuai | Gagal acceptance |
 | Frontend diperbaiki evaluator | Alur sesi, retry idempotency, privasi, UI dan pemisahan komponen diperbaiki | Hasil reviewer-assisted; gunakan bukti CI pada commit rilis |
 | Review AI PR #1 | Gemma4 26B menemukan satu IDOR severity high pada fixture terisolasi setelah push GitHub | Satu kasus positif; belum mengukur recall/false positives |
+| Review AI PR #2, scope app.mjs saja | Model menduga race tanpa melihat schema | Reviewer menolak temuan ini: transaksi sama, source row lock, atomic destination UPDATE, UNIQUE(user_id,idem_key), satu akun per user dan penerima tetap. Tes konkurensi/replay mendukung adjudikasi. SQL context ditambahkan untuk percobaan berikutnya. |
 
 ## Atribusi
 Hermes/model lokal membuat kandidat modul privacy dan frontend. Evaluator (Codex)
