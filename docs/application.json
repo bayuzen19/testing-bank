@@ -1,15 +1,95 @@
 {
-  "name":"Muamalat Banking PoC - Hermes local coding evaluation",
-  "author":"Bayuzen Ahmad",
-  "owner":"Bayuzen Ahmad (PoC)",
-  "classification":"Public synthetic demonstration; no bank endorsement or real customer data",
-  "purpose":"Evaluate a local AI coding assistant against independent acceptance tests using a bank website as the workload.",
-  "features":[
-    {"name":"Synthetic onboarding and login","description":"Demo-prefixed names and example.test email addresses only; password hashing; opaque HttpOnly session; server-side revocation.","sources":["server/app.mjs","src/App.jsx"],"tests":["tests/api.test.mjs","tests/browser/bank.spec.mjs"]},
-    {"name":"Account dashboard","description":"Authenticated account ownership filter, masked account display, integer rupiah balance and session restoration.","sources":["server/app.mjs","src/App.jsx"],"tests":["tests/api.test.mjs","tests/browser/bank.spec.mjs"]},
-    {"name":"Simulated transfers","description":"Two synthetic recipients; confirmation; idempotency; transaction and row lock; insufficient-funds and cross-user denial.","sources":["server/app.mjs","server/schema.sql","src/App.jsx"],"tests":["tests/api.test.mjs","tests/browser/bank.spec.mjs"]},
-    {"name":"Privacy controls","description":"Independent AES-GCM and HMAC keys; masking; explicit marketing preference; reauthenticated profile export; erasure request recorded pending verification and retention review.","sources":["server/privacy.mjs","server/app.mjs","src/App.jsx"],"tests":["tests/privacy.test.mjs","tests/api.test.mjs","tests/browser/bank.spec.mjs"]},
-    {"name":"Local AI GitHub review","description":"Fetch a PR patch, review with installed Ollama model on literal loopback, recheck head SHA; advisory JSON findings. Never auto-merge.","sources":["scripts/github_review.py","scripts/local_model.py"],"tests":["tests/tooling_test.py"]},
-    {"name":"DevOps quality and release documentation","description":"Dependency audit, browser acceptance, backend coverage, Sonar task-specific quality gate, non-root image and immutable artifact evidence; documentation follows successful gates.","sources":[".github/workflows/ci.yml","Dockerfile","scripts/run_sonar.py","scripts/release_docs.py"],"tests":["tests/tooling_test.py"]}
+  "name": "Muamalat Banking PoC - Hermes local coding evaluation",
+  "author": "Bayuzen Ahmad",
+  "owner": "Bayuzen Ahmad (PoC)",
+  "classification": "Public synthetic demonstration; no bank endorsement or real customer data",
+  "purpose": "Evaluate a local AI coding assistant against independent acceptance tests using a bank website as the workload.",
+  "features": [
+    {
+      "name": "Synthetic onboarding and login",
+      "description": "Demo-prefixed names and example.test email addresses only; password hashing; opaque HttpOnly session; server-side revocation.",
+      "sources": [
+        "server/app.mjs",
+        "src/App.jsx"
+      ],
+      "tests": [
+        "tests/api.test.mjs",
+        "tests/browser/bank.spec.mjs"
+      ]
+    },
+    {
+      "name": "Account dashboard",
+      "description": "Authenticated account ownership filter, masked account display, integer rupiah balance and session restoration.",
+      "sources": [
+        "server/app.mjs",
+        "src/App.jsx"
+      ],
+      "tests": [
+        "tests/api.test.mjs",
+        "tests/browser/bank.spec.mjs"
+      ]
+    },
+    {
+      "name": "Balance visibility",
+      "description": "Optional screen masking removes the displayed balance from DOM text, uses a native keyboard-accessible toggle, resets on remount and stores no preference. Visual discretion only, not authorization or encryption.",
+      "sources": [
+        "src/App.jsx",
+        "src/styles.css"
+      ],
+      "tests": [
+        "tests/browser/balance-privacy.spec.mjs"
+      ]
+    },
+    {
+      "name": "Simulated transfers",
+      "description": "Two synthetic recipients; confirmation; idempotency; transaction and row lock; insufficient-funds and cross-user denial.",
+      "sources": [
+        "server/app.mjs",
+        "server/schema.sql",
+        "src/App.jsx"
+      ],
+      "tests": [
+        "tests/api.test.mjs",
+        "tests/browser/bank.spec.mjs"
+      ]
+    },
+    {
+      "name": "Privacy controls",
+      "description": "Independent AES-GCM and HMAC keys; masking; explicit marketing preference; reauthenticated profile export; erasure request recorded pending verification and retention review.",
+      "sources": [
+        "server/privacy.mjs",
+        "server/app.mjs",
+        "src/App.jsx"
+      ],
+      "tests": [
+        "tests/privacy.test.mjs",
+        "tests/api.test.mjs",
+        "tests/browser/bank.spec.mjs"
+      ]
+    },
+    {
+      "name": "Local AI GitHub review",
+      "description": "Fetch a PR patch, review with installed Ollama model on literal loopback, recheck head SHA; advisory JSON findings. Never auto-merge.",
+      "sources": [
+        "scripts/github_review.py",
+        "scripts/local_model.py"
+      ],
+      "tests": [
+        "tests/tooling_test.py"
+      ]
+    },
+    {
+      "name": "DevOps quality and release documentation",
+      "description": "Dependency audit, browser acceptance, backend coverage, Sonar task-specific quality gate, non-root image and immutable artifact evidence; documentation follows successful gates.",
+      "sources": [
+        ".github/workflows/ci.yml",
+        "Dockerfile",
+        "scripts/run_sonar.py",
+        "scripts/release_docs.py"
+      ],
+      "tests": [
+        "tests/tooling_test.py"
+      ]
+    }
   ]
 }
