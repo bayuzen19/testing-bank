@@ -1,0 +1,95 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bank-poc
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: bank-app
+  namespace: bank-poc
+automountServiceAccountToken: false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bank-app
+  namespace: bank-poc
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: bank-app}
+  template:
+    metadata:
+      labels: {app: bank-app}
+    spec:
+      serviceAccountName: bank-app
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: bank-app
+          image: APPROVED_IMAGE_REQUIRED
+          imagePullPolicy: IfNotPresent
+          ports: [{containerPort: 4100}]
+          envFrom:
+            - secretRef: {name: bank-app-config}
+          env:
+            - {name: DEMO_MODE, value: 'true'}
+            - {name: PORT, value: '4100'}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 100m, memory: 128Mi}
+            limits: {cpu: '1', memory: 384Mi}
+          readinessProbe:
+            httpGet: {path: /api/health, port: 4100}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: {path: /api/health, port: 4100}
+            initialDelaySeconds: 20
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bank-app
+  namespace: bank-poc
+spec:
+  type: ClusterIP
+  selector: {app: bank-app}
+  ports: [{port: 4100, targetPort: 4100}]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: bank-app-restricted
+  namespace: bank-poc
+spec:
+  podSelector:
+    matchLabels: {app: bank-app}
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: ingress-nginx}
+      ports: [{protocol: TCP, port: 4100}]
+  egress:
+    - to:
+        - podSelector:
+            matchLabels: {app: bank-db}
+      ports: [{protocol: TCP, port: 5432}]
+    - to:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: kube-system}
+      ports: [{protocol: UDP, port: 53}, {protocol: TCP, port: 53}]
