@@ -3,6 +3,11 @@ import base64,json,os,secrets,time,urllib.request,urllib.parse
 from pathlib import Path
 
 BASE=os.getenv('SONAR_HOST_URL','http://127.0.0.1:9002').rstrip('/')
+
+def generate_admin_password():
+    # Guaranteed character classes plus 256 bits of random material. A bare
+    # URL-safe token can omit punctuation and be rejected by Sonar's policy.
+    return 'Aa9!'+secrets.token_urlsafe(32)
 def api(path,params=None,auth=None):
     headers={}
     if auth: headers['Authorization']='Basic '+base64.b64encode(auth.encode()).decode()
@@ -20,7 +25,7 @@ def main():
     state=Path('runtime/sonar-admin.txt');state.parent.mkdir(exist_ok=True)
     if state.exists():password=state.read_text()
     else:
-        password=secrets.token_urlsafe(32)
+        password=generate_admin_password()
         api('/api/users/change_password',{'login':'admin','previousPassword':'admin','password':password},'admin:admin');state.write_text(password)
     auth='admin:'+password
     projects=api('/api/projects/search?projects=testing-bank',auth=auth)
