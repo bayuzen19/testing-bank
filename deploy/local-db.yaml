@@ -1,0 +1,58 @@
+# Disposable synthetic database only; no persistence, HA or production claim.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bank-db
+  namespace: bank-poc
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector:
+    matchLabels: {app: bank-db}
+  template:
+    metadata:
+      labels: {app: bank-db}
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 70
+        runAsGroup: 70
+        fsGroup: 70
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: postgres
+          image: postgres:17-alpine
+          ports: [{containerPort: 5432}]
+          envFrom:
+            - secretRef: {name: bank-db-config}
+          env:
+            - {name: PGDATA, value: /var/lib/postgresql/data/pgdata}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 100m, memory: 128Mi}
+            limits: {cpu: '1', memory: 384Mi}
+          readinessProbe:
+            exec: {command: [pg_isready, -U, banklab, -d, banklab]}
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          volumeMounts:
+            - {name: data, mountPath: /var/lib/postgresql/data}
+            - {name: socket, mountPath: /var/run/postgresql}
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - {name: data, emptyDir: {}}
+        - {name: socket, emptyDir: {}}
+        - {name: tmp, emptyDir: {}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bank-db
+  namespace: bank-poc
+spec:
+  selector: {app: bank-db}
+  ports: [{port: 5432, targetPort: 5432}]
